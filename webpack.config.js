@@ -1,28 +1,46 @@
 var webpack = require('webpack');
+var path = require('path');
 
 module.exports = {
-  target: 'web',
   entry: './src/popover.js',
   output: {
-    path: __dirname + '/dist/',
+    path: path.resolve('./dist'),
     filename: 'react-popover.js',
     library: 'ReactPopover',
-    libraryTarget: "var",
+    libraryTarget: 'commonjs',
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx'],
+    root: [
+      path.resolve('./src')
+    ],
+    modulesDirectories: ['node_modules']
   },
   module: {
     loaders: [
     {
       test: /\.jsx?$/,
-      exclude: /(node_modules|bower_components)/,
+      include: path.resolve('./src'),
       loaders: ['babel'],
     }
     ]
   },
+  plugins: [
+    new webpack.NoErrorsPlugin()
+  ],
   externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM'
+    'react': {
+      'commonjs': 'react',
+      'commonjs2': 'react',
+      'amd': 'react',
+      // React dep should be available as window.React, not window.react
+      'root': 'React'
+    },
+    'react-dom': {
+      'commonjs': 'react-dom',
+      'commonjs2': 'react-dom',
+      'amd': 'react-dom',
+      'root': 'ReactDOM'
+    }
   }
 };
